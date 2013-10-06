@@ -109,7 +109,8 @@ module Crocodoc
     common_headers = {        
       :params => get_params, 
       :accept => encoding,
-      :Authorization => "Token #{@@api_token}",
+#      :Authorization => "Token #{@@api_token}",
+      :Authorization => "Token #{self.api_token}",
       :content_type => :json
     }
 

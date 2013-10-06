@@ -3,7 +3,7 @@
 # Require libraries and set API token
 require 'pathname'
 require_relative 'lib/crocodoc'
-Crocodoc.api_token = 'YOUR_API_TOKEN'
+Crocodoc.api_token = ENV['CROCODOC_TOKEN']
 
 # == Example #1
 # 
