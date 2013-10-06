@@ -4,7 +4,7 @@ module Crocodoc
   # document, and text extracted from a document.
   class Download
     # The Download API path relative to the base API path
-    @@path = '/download/'
+    @@path = '/documents'
     
     # Set the path
     def self.path=(path)
@@ -29,17 +29,10 @@ module Crocodoc
     # 
     # @return [String] The downloaded file contents as a string
     # @raise CrocodocError
-    def self.document(uuid, is_pdf=false, is_annotated=false, filter=nil)
-      get_params = {uuid: uuid}
-      get_params['pdf'] = 'true' if is_pdf
-      get_params['annotated'] = 'true' if is_annotated
-      
-      if filter
-        filter = filter.join(',') if filter.is_a? Array
-        get_params['filter'] = filter
-      end
-      
-      Crocodoc._request(self.path, 'document', get_params, nil, false)
+    def self.document(id, is_pdf=false, is_annotated=false, filter=nil)
+      extension = is_pdf ? 'pdf' : 'zip'
+      encoding = is_pdf ? :pdf : :zip
+      Crocodoc._request(self.path + "/#{id}/content.#{extension}", 'get', nil, nil, false, encoding)
     end
     
     # Download a document's extracted text from Crocodoc.
@@ -49,8 +42,7 @@ module Crocodoc
     # @return [String] The file's extracted text
     # @raise CrocodocError
     def self.text(uuid)
-      get_params = {uuid: uuid}
-      Crocodoc._request(self.path, 'text', get_params, nil, false)
+      return Crocodoc::_error('Not supported by Box view API currently', self.name, __method__, response)
     end
   
     # Download a document's thumbnail from Crocodoc with an optional size.
@@ -62,13 +54,6 @@ module Crocodoc
     # @return [String] The downloaded thumbnail contents
     # @raise CrocodocError
     def self.thumbnail(uuid, width=nil, height=nil)
-      get_params = {uuid: uuid}
-    
-      if width != nil and height != nil
-        get_params['size'] = String(width) + 'x' + String(height)
-      end
-    
-      Crocodoc._request(self.path, 'thumbnail', get_params, nil, false)
-    end
+      return Crocodoc::_error('Not supported by Box view API currently', self.name, __method__, response)    end
   end
 end

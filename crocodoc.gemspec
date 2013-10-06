@@ -3,13 +3,13 @@ $:.unshift(File.join(File.dirname(__FILE__), 'lib'))
 require 'crocodoc/version'
 
 spec = Gem::Specification.new do |s|
-  s.name = 'crocodoc'
+  s.name = 'box-view'
   s.version = Crocodoc::VERSION
-  s.summary = 'Ruby wrapper for the Crocodoc API'
-  s.description = 'The Crocodoc API lets you upload documents and then generate secure and customized viewing sessions for them. See https://crocodoc.com for details.'
-  s.authors = ['Brandon Goldman']
-  s.email = ['brandon.goldman@gmail.com']
-  s.homepage = 'https://crocodoc.com/docs/api/'
+  s.summary = 'Ruby wrapper for the Box View API which maintains the compatibility with Crocodoc API as much as possible'
+  s.description = 'The Box View API lets you upload documents and then generate secure and customized viewing sessions for them. See http://developers.box.com/view/ for details.'
+  s.authors = ['Brandon Goldman', 'Kenta Yasukawa']
+  s.email = ['kenta.yasukawa@gmail.com']
+  s.homepage = 'http://developers.box.com/view/'
   s.require_paths = %w{lib}
 
   s.add_dependency('rest-client', '~> 1.4')

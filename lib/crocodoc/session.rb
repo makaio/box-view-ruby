@@ -4,7 +4,7 @@ module Crocodoc
   # document using a specific session-based URL.
   class Session
     # The Session API path relative to the base API path
-    @@path = '/session/'
+    @@path = '/sessions'
     
     # Set the path
     def self.path=(path)
@@ -22,7 +22,7 @@ module Crocodoc
     # downloadable, can be copy-protected, and can prevent changes from being
     # persisted.
     # 
-    # @param [String] uuid The uuid of the file to create a session for
+    # @param [String] id The ID of the file to create a session for
     # @param [Hash<String,>] params A hash representing:
     #   [Boolean] 'is_editable' Can users create annotations and comments while
     #     viewing the document with this session key?
@@ -42,56 +42,24 @@ module Crocodoc
     # 
     # @return [String] A unique session key for the document
     # @raise [CrocodocError]
-    def self.create(uuid, params = {})
-      post_params = {uuid: uuid}
+    def self.create(id, params = {})
+      post_params = {document_id: id}
 
-      if params.has_key? 'is_editable'
-        post_params['editable'] = params['is_editable'] ? 'true' : 'false'
-      end
-      
-      if (
-        params.has_key? 'user' \
-        and params['user'] \
-        and params['user'].is_a? Hash \
-        and params['user'].has_key? 'id' \
-        and params['user'].has_key? 'name' \
-      )
-        post_params['user'] = String(params['user']['id']) + ',' + params['user']['name']
-      end
-      
-      if params.has_key? 'filter'
-        if params['filter'].is_a? Array
-          params['filter'] = params['filter'].join(',')
-        end
-        
-        post_params['filter'] = params['filter']
-      end
-      
-      if params.has_key? 'is_admin'
-        post_params['admin'] = params['is_admin'] ? 'true' : 'false'
-      end
-      
-      if params.has_key? 'is_downloadable'
-        post_params['downloadable'] = params['is_downloadable'] ? 'true' : 'false'
-      end
-      
-      if params.has_key? 'is_copyprotected'
-        post_params['copyprotected'] = params['is_copyprotected'] ? 'true' : 'false'
-      end
-      
-      if params.has_key? 'is_demo'
-        post_params['demo'] = params['is_demo'] ? 'true' : 'false'
+      if params.has_key? 'duration'
+        post_params['duration'] = params['duration']
       end
 
-      post_params['sidebar'] = params['sidebar'] if params.has_key? 'sidebar'
+      if params.has_key? 'expires_at'
+        post_params['expires_at'] = params['expires_at']
+      end
       
-      session = Crocodoc._request(self.path, 'create', nil, post_params)
+      session = Crocodoc._request(self.path, 'post', nil, post_params)
       
-      unless session.is_a? Hash and session.has_key? 'session'
+      unless session.is_a? Hash and session.has_key? 'id'
         return Crocodoc._error('missing_session_key', self.name, __method__, session)
       end
       
-      session['session']
+      session['id']
     end
   end
 end

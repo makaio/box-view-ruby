@@ -1,43 +1,43 @@
-# crocodoc-ruby
+# box-view-ruby
 
 ## Introduction
 
-crocodoc-ruby is a Ruby wrapper for the Crocodoc API.
-The Crocodoc API lets you upload documents and then generate secure and customized viewing sessions for them.
-Our API is based on REST principles and generally returns JSON encoded responses,
+box-view-ruby is a Ruby wrapper for the Box View API (The new version of Crocodoc API).
+The Box View API lets you upload documents and then generate secure and customized viewing sessions for them.
+The API is based on REST principles and generally returns JSON encoded responses,
 and in Ruby are converted to hashes unless otherwise noted.
+
+The gem is designed to keep the compatibility with the crocodoc gem so that it could work as a simple replacement for the gem. 
 
 ## Installation
 
-We suggest installing the library as a gem.
+It has not been published as a gem since a more proper implementation may come from the Crocodoc team.
 
-    gem install crocodoc
+You can add it as a gem by using the bundler's git functionality.
+
+    gem "box-api-ruby", :git => "git://github.com/kntyskw/box-api-ruby"
 
 You can also add the library as a submodule in your git project.
 
-    git submodule add git@github.com:crocodoc/crocodoc-ruby.git
+    git submodule add git@github.com:kntyskw/box-api-ruby.git
 
 You can also get the library by cloning or downloading.
 
 To clone:
 
-    git clone git@github.com:crocodoc/crocodoc-ruby.git
+    git clone git@github.com:kntyskw/box-api-ruby.git
     
 To download:
 
-    wget https://github.com/crocodoc/crocodoc-ruby/zipball/master -O crocodoc-ruby.zip
-    unzip crocodoc-ruby.zip
-    mv crocodoc-crocodoc-ruby-* crocodoc-ruby
+    wget https://github.com/kntyskw/box-api-ruby/zipball/master -O box-api-ruby.zip
+    unzip box-api-ruby.zip
+    mv kntyskw-box-api-ruby-* box-api-ruby
 
 Require the library into any of your Ruby files.
-
-If you have the gem installed:
-
-    require 'crocodoc'
     
 If you have the files locally:
 
-    require_relative /path/to/crocodoc-ruby/crocodoc.rb
+    require_relative /path/to/box-api-ruby/crocodoc.rb
 
 Please note that this library also requires that the 'rest-client' gem is installed, and a version of Ruby >= 1.9.
     
@@ -84,35 +84,31 @@ These methods allow you to upload, check the status of, and delete documents.
 
 #### Upload
 
-https://crocodoc.com/docs/api/#doc-upload  
+http://developers.box.com/view/
 To upload a document, use Crocodoc::Document.upload().
-Pass in a url (as a string) or a file resource object.
+Pass in a url (as a string). Note that passing a file resource object is NOT supported by Box API.
 This function returns a UUID of the file.
 
     // with a url
     uuid = Crocodoc::Document.upload(url)
-    
-    // with a file
-    file_handle = File.open(file_path, 'r')
-    uuid = Crocodoc::Document.upload(file_handle)
-    
+        
 #### Status
 
-https://crocodoc.com/docs/api/#doc-status  
-To check the status of one or more documents, use Crocodoc::Document.status().
-Pass in the UUID of the file or an array of UUIDS you want to check the status of.
+http://developers.box.com/view/
+To check the status of a document, use Crocodoc::Document.status().
+Pass in the UUID of the file you want to check the status of.
 This function returns a hash containing a "status" string" and a "viewable" boolean.
-If you passed in an array instead of a string, this function returns an array of hashes containing the status for each file.
+Note that passing an array instead of a string is not supported at this time
 
     // status contains status['status'] and status['viewable']
     status = Crocodoc::Document.status(uuid)
     
-    // statuses contains an array of status hashes
-    statuses = Crocodoc::Document.status([uuid, uuid2])
+    // The foollowing is not supported right now .
+    //statuses = Crocodoc::Document.status([uuid, uuid2])
     
 #### Delete
 
-https://crocodoc.com/docs/api/#doc-delete  
+http://developers.box.com/view/
 To delete a document, use Crocodoc::Document.delete().
 Pass in the UUID of the file you want to delete.
 This function returns a boolean of whether the document was successfully deleted or not.
@@ -122,16 +118,14 @@ This function returns a boolean of whether the document was successfully deleted
 ### Download
 
 These methods allow you to download documents from Crocodoc in different ways.
-You can download originals, PDFs, extracted text, and thumbnails.
+You can download PDF or ZIP archive of SVG files. Note that extracting text and thumbnails is not supported.
 
 #### Document
 
-https://crocodoc.com/docs/api/#dl-doc  
+http://developers.box.com/view/
 To download a document, use Crocodoc::Download.document().
 Pass in the uuid,
-an optional boolean of whether or not the file should be downloaded as a PDF,
-an optional boolean of whether or not the file should be annotated,
-and an optional filter string.
+an optional boolean of whether or not the file should be downloaded as a PDF.
 This function returns the file contents as a string, which you probably want to save to a file.
 
     // with no optional arguments
@@ -139,65 +133,30 @@ This function returns the file contents as a string, which you probably want to 
     file_handle.write(file)
     
     // with all optional arguments
-    file = Crocodoc::Download.document(uuid, true, true, 'all')
+    file = Crocodoc::Download.document(uuid, true)
     file_handle.write(file)
     
 #### Thumbnail
 
-https://crocodoc.com/docs/api/#dl-thumb  
-To download a thumbnail, use Crocodoc::Download.thumbnail().
-Pass in the uuid and optionally the width and height.
-This function returns the file contents as a string, which you probably want to save to a file.
-
-    // with no optional size arguments
-    thumbnail = Crocodoc::Download.thumbnail(uuid)
-    file_handle.write(thumbnail)
-    
-    // with optional size arguments (width 77, height 100)
-    thumbnail = Crocodoc::Download.thumbnail(uuid, 77, 100)
-    file_handle.write(thumbnail)
+Currently not supported because the Box API does not provide the equivalent functionality as of writing. 
 
 #### Text
 
-https://crocodoc.com/docs/api/#dl-text  
-To download extracted text from a document, use Crocodoc::Download.text().
-Pass in the uuid.
-This function returns the extracted text as a string.
-
-    text = Crocodoc::Download.text(uuid)
-    
+Currently not supported because the Box API does not provide the equivalent functionality as of writing.     
 ### Session
 
 The session method allows you to create a session for viewing documents in a secure manner.
 
 #### Create
 
-https://crocodoc.com/docs/api/#session-create  
+http://developers.box.com/view/
 To get a session key, use Crocodoc::Session.create().
 Pass in the uuid and optionally a params hash.
-The params hash can contain an "is_editable" boolean,
-a "user" hash with "id" and "name" fields,
-a "filter" string, a "sidebar" string,
-and booleans for "is_admin", "is_downloadable", "is_copyprotected", and "is_demo".
 This function returns a session key.
 
     // without optional params
     session_key = Crocodoc::Session.create(uuid)
     
-    // with optional params
-    session_key = Crocodoc::Session.create(uuid, {
-        'is_editable' => true,
-        'user' => {
-            'id' => 1,
-            'name' => 'John Crocodile'
-        },
-        'filter' => 'all',
-        'is_admin' => true,
-        'is_downloadable' => true,
-        'is_copyprotected' => false,
-        'is_demo' => false,
-        'sidebar' => 'visible'
-    })
     
 ## Support
 

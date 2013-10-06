@@ -18,10 +18,10 @@ module Crocodoc
   @@protocol = 'https'
   
   # The default host
-  @@host = 'crocodoc.com'
+  @@host = 'view-api.box.com'
   
   # The default base path on the server where the API lives
-  @@base_path = '/api/v2'
+  @@base_path = '/1'
   
   # Set the API token
   def self.api_token=(api_token)
@@ -85,44 +85,60 @@ module Crocodoc
   # 
   # @param [String] path The path on the server to make the request to
   #   relative to the base path
-  # @param [String] method This is just an addition to the path, for example,
-  #   in "/documents/upload" the method would be "upload"
+  # @param [String] method HTTP method name to use 
   # @param [Hash<String, String>] get_params A hash of GET params to be added
   #   to the URL
   # @param [Hash<String, String>] post_params A hash of GET params to be added
   #   to the URL
-  # @param [Boolean] is_json Should the file be converted from JSON? Defaults to
-  #   true.
+  # @param [Boolean] is_json Defaults to true
+  # @param [Symbol] econding Expected content encoding. Defaults to :json
   # 
   # @return [Hash<String,>, String] The response hash is usually converted from
   #   JSON, but sometimes we just return the raw response from the server
   # @raise [CrocodocError]
-  def self._request(path, method, get_params, post_params, is_json=true)
-    url = @@protocol + '://' + @@host + @@base_path + path + method
+  def self._request(path, method, get_params, post_params, is_json=true, encoding=:json)
+    url = @@protocol + '://' + @@host + @@base_path + path
+    is_json = encoding == :json ? true : false
 
-    # add the API token to get_params
     get_params = {} unless get_params
-    get_params['token'] = @@api_token
-    
-    # add the API token to post_params
-    if post_params and post_params.length > 0
-      # add the API token to post_params
-      post_params['token'] = @@api_token
-    end
+    post_json = JSON.generate(post_params) if post_params
 
     result = nil
     http_code = nil
-    
-    if post_params && post_params.length > 0
-      response = RestClient.post(url, post_params, params: get_params){|response, request, result| result }
+
+    common_headers = {        
+      :params => get_params, 
+      :accept => encoding,
+      :Authorization => "Token #{@@api_token}",
+      :content_type => :json
+    }
+
+    response = nil
+    if method == 'post'
+      response = RestClient.post(url, 
+        post_json, 
+        common_headers ){|response, request, result| result }
       result = RestClient::Request.decode(response['content-encoding'], response.body)
       http_code = Integer(response.code)
-    else
-      response = RestClient.get(url, params: get_params){|response, request, result| result }
+    elsif method == 'get'
+      response = RestClient.get(url, 
+        common_headers ){|response, request, result| result }
       result = RestClient::Request.decode(response['content-encoding'], response.body)
       http_code = Integer(response.code)
+    elsif method == 'put'
+      response = RestClient.put(url, 
+        post_json,
+        common_headers){|response, request, result| result }
+      result = RestClient::Request.decode(response['content-encoding'], response.body)
+      http_code = Integer(response.code)
+    elsif method == 'delete'      
+      response = RestClient.delete(url, 
+        common_headers){|response, request, result| result }
+      http_code = Integer(response.code)
+      is_json = false
+      result = http_code == 204 ? true : false
     end
-    
+
     if is_json
       json_decoded = false
       
