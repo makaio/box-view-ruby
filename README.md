@@ -15,29 +15,29 @@ It has not been published as a gem since a more proper implementation may come f
 
 You can add it as a gem by using the bundler's git functionality.
 
-    gem "box-api-ruby", :git => "git://github.com/kntyskw/box-api-ruby"
+    gem "box-view-ruby", :git => "git://github.com/kntyskw/box-view-ruby"
 
 You can also add the library as a submodule in your git project.
 
-    git submodule add git@github.com:kntyskw/box-api-ruby.git
+    git submodule add git@github.com:kntyskw/box-view-ruby.git
 
 You can also get the library by cloning or downloading.
 
 To clone:
 
-    git clone git@github.com:kntyskw/box-api-ruby.git
+    git clone git@github.com:kntyskw/box-view-ruby.git
     
 To download:
 
-    wget https://github.com/kntyskw/box-api-ruby/zipball/master -O box-api-ruby.zip
-    unzip box-api-ruby.zip
-    mv kntyskw-box-api-ruby-* box-api-ruby
+    wget https://github.com/kntyskw/box-view-ruby/zipball/master -O box-view-ruby.zip
+    unzip box-view-ruby.zip
+    mv kntyskw-box-view-ruby-* box-view-ruby
 
 Require the library into any of your Ruby files.
     
 If you have the files locally:
 
-    require_relative /path/to/box-api-ruby/crocodoc.rb
+    require_relative /path/to/box-view-ruby/crocodoc.rb
 
 Please note that this library also requires that the 'rest-client' gem is installed, and a version of Ruby >= 1.9.
     
@@ -54,10 +54,10 @@ Save the file, make sure the example-files directory is writeable, and then run 
 
     ruby examples.rb
     
-You should see 15 examples run with output in your terminal.
+You should see 7 examples run with output in your terminal.
 You can inspect the examples.rb code to see each API call being used.
 
-To start using crocodoc-ruby in your code, set your API token:
+To start using box-view-ruby in your code, set your API token:
 
     Crocodoc.api_token = 'YOUR_API_TOKEN'
     
