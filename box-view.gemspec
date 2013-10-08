@@ -1,6 +1,6 @@
 $:.unshift(File.join(File.dirname(__FILE__), 'lib'))
 
-require 'crocodoc/version'
+require 'box-view/version'
 
 spec = Gem::Specification.new do |s|
   s.name = 'box-view'
