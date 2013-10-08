@@ -2,8 +2,9 @@
 
 # Require libraries and set API token
 require 'pathname'
-require_relative 'lib/crocodoc'
-Crocodoc.api_token = ENV['CROCODOC_TOKEN']
+require_relative 'lib/box-view'
+BoxView.api_token = ENV['BOX_VIEW_TOKEN']
+Crocodoc = BoxView
 
 # == Example #1
 # 

@@ -6,12 +6,12 @@ require 'rest-client'
 require_relative 'crocodoc_error'
 
 # require the different crocodoc clients
-require_relative 'crocodoc/document'
-require_relative 'crocodoc/download'
-require_relative 'crocodoc/session'
+require_relative 'box-view/document'
+require_relative 'box-view/download'
+require_relative 'box-view/session'
 
-module Crocodoc
-  # The developer's Crocodoc API token
+module BoxView
+  # The developer's Box View API token
   @@api_token = nil
   
   # The default protocol (Crocodoc uses HTTPS)

@@ -1,5 +1,5 @@
-module Crocodoc
-  # Provides access to the Crocodoc Session API. The Session API is used to
+module BoxView
+  # Provides access to the BoxView Session API. The Session API is used to
   # to create sessions for specific documents that can be used to view a
   # document using a specific session-based URL.
   class Session
@@ -53,10 +53,10 @@ module Crocodoc
         post_params['expires_at'] = params['expires_at']
       end
       
-      session = Crocodoc._request(self.path, 'post', nil, post_params)
+      session = BoxView._request(self.path, 'post', nil, post_params)
       
       unless session.is_a? Hash and session.has_key? 'id'
-        return Crocodoc._error('missing_session_key', self.name, __method__, session)
+        return BoxView._error('missing_session_key', self.name, __method__, session)
       end
       
       session['id']

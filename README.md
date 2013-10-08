@@ -7,7 +7,10 @@ The Box View API lets you upload documents and then generate secure and customiz
 The API is based on REST principles and generally returns JSON encoded responses,
 and in Ruby are converted to hashes unless otherwise noted.
 
-The gem is designed to keep the compatibility with the crocodoc gem so that it could work as a simple replacement for the gem. 
+The gem is designed to keep the compatibility with the crocodoc gem so that it could work as a simple replacement for the gem. It is up to you to load this gem and do as follows to use it as the drop-in replacement and re-use your code that uses the Crocodoc API. The examples.rb works in that way. By the design, you may choose to use both versions at the same time.
+
+   Crocodoc = BoxView
+   Crocodoc::Document.upload(...)
 
 ## Installation
 
@@ -48,7 +51,7 @@ These examples are interactive and you can run this file to see crocodoc-ruby in
 
 To run these examples, open up examples.rb and change this line to show your API token:
 
-    Crocodoc.api_token = 'YOUR_API_TOKEN'
+    BoxView.api_token = 'YOUR_API_TOKEN'
     
 Save the file, make sure the example-files directory is writeable, and then run examples.rb:
 
@@ -59,9 +62,9 @@ You can inspect the examples.rb code to see each API call being used.
 
 To start using box-view-ruby in your code, set your API token:
 
-    Crocodoc.api_token = 'YOUR_API_TOKEN'
+    BoxView.api_token = 'YOUR_API_TOKEN'
     
-And now you can start using the methods in Crocodoc::Document, Crocodoc::Download, and Crocodoc::Session.
+And now you can start using the methods in BoxView::Document, BoxView::Download, and BoxView::Session.
 
 Read on to find out more how to use crocodoc-ruby.
 You can also find more detailed information about our API here:
@@ -85,35 +88,35 @@ These methods allow you to upload, check the status of, and delete documents.
 #### Upload
 
 http://developers.box.com/view/
-To upload a document, use Crocodoc::Document.upload().
+To upload a document, use BoxView::Document.upload().
 Pass in a url (as a string). Note that passing a file resource object is NOT supported by Box API.
 This function returns a UUID of the file.
 
     // with a url
-    uuid = Crocodoc::Document.upload(url)
+    uuid = BoxView::Document.upload(url)
         
 #### Status
 
 http://developers.box.com/view/
-To check the status of a document, use Crocodoc::Document.status().
+To check the status of a document, use BoxView::Document.status().
 Pass in the UUID of the file you want to check the status of.
 This function returns a hash containing a "status" string" and a "viewable" boolean.
 Note that passing an array instead of a string is not supported at this time
 
     // status contains status['status'] and status['viewable']
-    status = Crocodoc::Document.status(uuid)
+    status = BoxView::Document.status(uuid)
     
     // The foollowing is not supported right now .
-    //statuses = Crocodoc::Document.status([uuid, uuid2])
+    //statuses = BoxView::Document.status([uuid, uuid2])
     
 #### Delete
 
 http://developers.box.com/view/
-To delete a document, use Crocodoc::Document.delete().
+To delete a document, use BoxView::Document.delete().
 Pass in the UUID of the file you want to delete.
 This function returns a boolean of whether the document was successfully deleted or not.
 
-    deleted  = Crocodoc::Document.delete(uuid)
+    deleted  = BoxView::Document.delete(uuid)
     
 ### Download
 
@@ -123,17 +126,17 @@ You can download PDF or ZIP archive of SVG files. Note that extracting text and 
 #### Document
 
 http://developers.box.com/view/
-To download a document, use Crocodoc::Download.document().
+To download a document, use BoxView::Download.document().
 Pass in the uuid,
 an optional boolean of whether or not the file should be downloaded as a PDF.
 This function returns the file contents as a string, which you probably want to save to a file.
 
     // with no optional arguments
-    file = Crocodoc::Download.document(uuid)
+    file = BoxView::Download.document(uuid)
     file_handle.write(file)
     
     // with all optional arguments
-    file = Crocodoc::Download.document(uuid, true)
+    file = BoxView::Download.document(uuid, true)
     file_handle.write(file)
     
 #### Thumbnail
@@ -150,12 +153,12 @@ The session method allows you to create a session for viewing documents in a sec
 #### Create
 
 http://developers.box.com/view/
-To get a session key, use Crocodoc::Session.create().
+To get a session key, use BoxView::Session.create().
 Pass in the uuid and optionally a params hash.
 This function returns a session key.
 
     // without optional params
-    session_key = Crocodoc::Session.create(uuid)
+    session_key = BoxView::Session.create(uuid)
     
     
 ## Support

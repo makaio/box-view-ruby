@@ -1,5 +1,5 @@
-module Crocodoc
-  # Provides access to the Crocodoc Document API. The Document API is used for
+module BoxView
+  # Provides access to the BoxView Document API. The Document API is used for
   # uploading, checking status, and deleting documents.
   class Document
     # The Document API path relative to the base API path
@@ -22,7 +22,7 @@ module Crocodoc
     # @return [Boolean] Was the file deleted?
     # @raise [CrocodocError]
     def self.delete(id)
-      Crocodoc._request(self.path + "/#{id}", 'delete', nil, nil, false)
+      BoxView._request(self.path + "/#{id}", 'delete', nil, nil, false)
     end
     
     # Check the status of a file on Crocodoc by UUID. 
@@ -33,7 +33,7 @@ module Crocodoc
     # @return A hash of the Document object
     # @raise [CrocodocError]
     def self.status(id)
-      response = Crocodoc._request(self.path + "/#{id}", 'get', nil, nil)
+      response = BoxView._request(self.path + "/#{id}", 'get', nil, nil)
       response['viewable'] = response['status'] == 'done' ? true : false
       response['error'] = "The document has error" if response['status'] == 'error'
       response
@@ -50,10 +50,10 @@ module Crocodoc
       
       post_params['url'] = url
 
-      response = Crocodoc::_request(self.path, 'post', nil, post_params)
+      response = BoxView::_request(self.path, 'post', nil, post_params)
       
       unless response.has_key? 'id'
-      	return Crocodoc::_error('missing_uuid', self.name, __method__, response)
+      	return BoxView::_error('missing_uuid', self.name, __method__, response)
       end
       
       response['id']

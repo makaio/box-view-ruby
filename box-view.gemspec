@@ -4,7 +4,7 @@ require 'crocodoc/version'
 
 spec = Gem::Specification.new do |s|
   s.name = 'box-view'
-  s.version = Crocodoc::VERSION
+  s.version = BoxView::VERSION
   s.summary = 'Ruby wrapper for the Box View API which maintains the compatibility with Crocodoc API as much as possible'
   s.description = 'The Box View API lets you upload documents and then generate secure and customized viewing sessions for them. See http://developers.box.com/view/ for details.'
   s.authors = ['Brandon Goldman', 'Kenta Yasukawa']

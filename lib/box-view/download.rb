@@ -1,5 +1,5 @@
-module Crocodoc
-  # Provides access to the Crocodoc Download API. The Download API is used for
+module BoxView
+  # Provides access to the BoxView Download API. The Download API is used for
   # downloading an original of a document, a PDF of a document, a thumbnail of a
   # document, and text extracted from a document.
   class Download
@@ -16,7 +16,7 @@ module Crocodoc
       @@path
     end
     
-    # Download a document's original file from Crocodoc. The file can
+    # Download a document's original file from BoxView. The file can
     # optionally be downloaded as a PDF, as another filename, with
     # annotations, and with filtered annotations.
     # 
@@ -32,17 +32,17 @@ module Crocodoc
     def self.document(id, is_pdf=false, is_annotated=false, filter=nil)
       extension = is_pdf ? 'pdf' : 'zip'
       encoding = is_pdf ? :pdf : :zip
-      Crocodoc._request(self.path + "/#{id}/content.#{extension}", 'get', nil, nil, false, encoding)
+      BoxView._request(self.path + "/#{id}/content.#{extension}", 'get', nil, nil, false, encoding)
     end
     
-    # Download a document's extracted text from Crocodoc.
+    # Download a document's extracted text from BoxView.
     # 
     # @param [String] uuid The uuid of the file to extract text from
     # 
     # @return [String] The file's extracted text
     # @raise CrocodocError
     def self.text(uuid)
-      return Crocodoc::_error('Not supported by Box view API currently', self.name, __method__, response)
+      return BoxView::_error('Not supported by Box view API currently', self.name, __method__, response)
     end
   
     # Download a document's thumbnail from Crocodoc with an optional size.
@@ -54,6 +54,6 @@ module Crocodoc
     # @return [String] The downloaded thumbnail contents
     # @raise CrocodocError
     def self.thumbnail(uuid, width=nil, height=nil)
-      return Crocodoc::_error('Not supported by Box view API currently', self.name, __method__, response)    end
+      return BoxView::_error('Not supported by Box view API currently', self.name, __method__, response)    end
   end
 end
