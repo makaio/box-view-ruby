@@ -15,7 +15,7 @@ print '  Uploading... '
 uuid = nil
 
 begin
-  uuid = Crocodoc::Document.upload(form_w4_url)
+  uuid = Crocodoc::Document.upload(form_w4_url, nil, '64x64')
   puts 'success :)'
   puts '  UUID is ' + uuid
 rescue CrocodocError => e
@@ -145,9 +145,30 @@ end
 
 # == Example #7
 #
+# Download a thumbnail from Example #1.
+puts ''
+puts 'Example #7 - Download a thumbnail.'
+print '  Downloading... '
+
+begin
+  filename = String(Pathname.new(File.expand_path(__FILE__)).dirname) +'/example-files/test.png'
+  file_handle = File.open(filename, 'w')
+  file_handle.binmode
+  thumb = Crocodoc::Download.thumbnail(uuid, 64, 64)
+  file_handle.write(thumb)
+  puts 'success :)'
+  puts '  Thumbnail was downloaded to ' + filename + '.'
+rescue CrocodocError => e
+  puts 'failed :('
+  puts '  Error Code: ' + e.code
+  puts '  Error Message: ' + e.message
+end
+
+# == Example #8
+#
 # Delete the file we uploaded from Example #1.
 puts ''
-puts 'Example #7 - Delete the first file we uploaded.'
+puts 'Example #8 - Delete the first file we uploaded.'
 print '  Deleting... '
 
 begin
