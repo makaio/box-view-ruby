@@ -7,7 +7,7 @@ BoxView.api_token = ENV['BOX_VIEW_TOKEN']
 Crocodoc = BoxView
 
 # == Example #1
-# 
+#
 # Upload a file to Crocodoc. We're uploading Form W4 from the IRS by URL.
 puts 'Example #1 - Upload Form W4 from the IRS by URL.'
 form_w4_url = 'http://www.irs.gov/pub/irs-pdf/fw4.pdf'
@@ -15,7 +15,7 @@ print '  Uploading... '
 uuid = nil
 
 begin
-  uuid = Crocodoc::Document.upload(form_w4_url)
+  uuid = Crocodoc::Document.upload(form_w4_url, nil, '64x64')
   puts 'success :)'
   puts '  UUID is ' + uuid
 rescue CrocodocError => e
@@ -25,7 +25,7 @@ rescue CrocodocError => e
 end
 
 # == Example #2
-# 
+#
 # Check the status of the file from Example #1.
 puts ''
 puts 'Example #2 - Check the status of the file we just uploaded.'
@@ -33,7 +33,7 @@ print '  Checking status... '
 
 begin
   status = Crocodoc::Document.status(uuid)
-  
+
   unless status.has_key? 'error'
     puts 'success :)'
     puts '  File status is ' + status['status'] + '.'
@@ -49,7 +49,7 @@ rescue CrocodocError => e
 end
 
 # == Example #3
-# 
+#
 # Wait ten seconds and check the status of both files again.
 puts ''
 puts 'Example #3 - Wait ten seconds and check the status again.'
@@ -60,10 +60,10 @@ print '  Checking status... '
 
 begin
   status = Crocodoc::Document.status(uuid)
-  
+
   if status
     puts 'success :)'
-    
+
     unless status.has_key? 'error'
       puts '  File status is ' + status['status'] + '.'
       puts '  File ' + (status['viewable'] ? 'is' : 'is not') + ' viewable.'
@@ -71,7 +71,7 @@ begin
       puts '  File #1 failed :('
       puts '  Error Message: ' . status['error']
     end
-    
+
   else
     puts 'failed :('
     puts '  Status was not returned.'
@@ -83,7 +83,7 @@ rescue CrocodocError => e
 end
 
 # == Example #4
-# 
+#
 # Download the file we uploaded from Example #1 as a PDF
 puts ''
 puts 'Example #4 - Download a file as a PDF.'
@@ -103,7 +103,7 @@ rescue CrocodocError => e
 end
 
 # == Example #5
-# 
+#
 # Download the file we uploaded from Example #1 as a ZIP
 puts ''
 puts 'Example #5 - Download a file as a ZIP.'
@@ -123,7 +123,7 @@ rescue CrocodocError => e
 end
 
 # == Example #6
-# 
+#
 # Create a session key for the file we uploaded from Example #3 with default
 # options.
 puts ''
@@ -133,8 +133,10 @@ session_key = nil
 
 begin
   session_key = Crocodoc::Session.create(uuid)
+  view_url = Crocodoc::Session.view_url(session_key)
   puts 'success :)'
   puts '  The session key is ' + session_key + '.'
+  puts '  View url is ' + view_url + '.'
 rescue CrocodocError => e
   puts 'failed :('
   puts '  Error Code: ' + e.code
@@ -142,15 +144,36 @@ rescue CrocodocError => e
 end
 
 # == Example #7
-# 
+#
+# Download a thumbnail from Example #1.
+puts ''
+puts 'Example #7 - Download a thumbnail.'
+print '  Downloading... '
+
+begin
+  filename = String(Pathname.new(File.expand_path(__FILE__)).dirname) +'/example-files/test.png'
+  file_handle = File.open(filename, 'w')
+  file_handle.binmode
+  thumb = Crocodoc::Download.thumbnail(uuid, 64, 64)
+  file_handle.write(thumb)
+  puts 'success :)'
+  puts '  Thumbnail was downloaded to ' + filename + '.'
+rescue CrocodocError => e
+  puts 'failed :('
+  puts '  Error Code: ' + e.code
+  puts '  Error Message: ' + e.message
+end
+
+# == Example #8
+#
 # Delete the file we uploaded from Example #1.
 puts ''
-puts 'Example #7 - Delete the first file we uploaded.'
+puts 'Example #8 - Delete the first file we uploaded.'
 print '  Deleting... '
 
 begin
   deleted = Crocodoc::Document.delete(uuid)
-  
+
   if deleted
     puts 'success :)'
     puts '  File was deleted.'
